@@ -11,5 +11,6 @@ CREATE TABLE courses (
     quarter TEXT NOT NULL,
     project_id INTEGER NOT NULL,
     notes TEXT,
-    score INTEGER
+    total INTEGER
+        REFERENCES questions(id) ON DELETE CASCADE NOT NULL
 );

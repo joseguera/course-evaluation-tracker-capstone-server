@@ -1,9 +1,9 @@
 const CoursesService = {
-    getAllNoms(knex) {
+    getAllCourses(knex) {
         return knex.select('*').from('courses');
     },
 
-    insertNom(knex, newCourse) {
+    insertCourse(knex, newCourse) {
         return knex
             .insert(newCourse)
             .into('courses')
@@ -21,13 +21,13 @@ const CoursesService = {
             .first()
     },
 
-    deleteNom(knex, id) {
+    deleteCourse(knex, id) {
         return knex('courses')
             .where({ id })
             .delete()
     },
 
-    updateNom(knex, id, newCourseFields) {
+    updateCourse(knex, id, newCourseFields) {
         return knex('courses')
             .where({ id })
             .update(newCourseFields)

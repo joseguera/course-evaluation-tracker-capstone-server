@@ -1,0 +1,37 @@
+const CoursesService = {
+    getAllNoms(knex) {
+        return knex.select('*').from('courses');
+    },
+
+    insertNom(knex, newCourse) {
+        return knex
+            .insert(newCourse)
+            .into('courses')
+            .returning('*')
+            .then(rows => {
+                return rows[0];
+            });
+    },
+
+    getById(knex, id) {
+        return knex
+            .from('courses')
+            .select('*')
+            .where('id', id)
+            .first()
+    },
+
+    deleteNom(knex, id) {
+        return knex('courses')
+            .where({ id })
+            .delete()
+    },
+
+    updateNom(knex, id, newCourseFields) {
+        return knex('courses')
+            .where({ id })
+            .update(newCourseFields)
+    }
+};
+
+module.exports = CoursesService;

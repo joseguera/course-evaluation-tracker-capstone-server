@@ -40,7 +40,7 @@ authRouter
                     })
             })
             .catch(next)
-            //end
+            //ending
     })
 
 module.exports = authRouter

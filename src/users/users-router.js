@@ -51,6 +51,7 @@ usersRouter
                     })
             })
             .catch(next)
+            //end
     })
 
 module.exports = usersRouter

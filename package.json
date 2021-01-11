@@ -1,7 +1,7 @@
 {
-  "name": "thinkful-node-postgres-boilerplate-app",
+  "name": "course-evaluation-tracker-capstone",
   "version": "1.0.0",
-  "description": "Node and PostgreSQL Boilerplate app",
+  "description": "Node and PostgreSQL Course-grading app",
   "main": "server.js",
   "scripts": {
     "test": "mocha --require test/setup.js --watch",
@@ -38,7 +38,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^8.2.1",
-    "nodemon": "^2.0.6",
+    "nodemon": "^2.0.7",
     "postgrator-cli": "^3.3.0",
     "supertest": "^5.0.0"
   }

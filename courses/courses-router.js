@@ -31,7 +31,7 @@ coursesRouter
             })
             .catch(next)
     })
-    .post(jsonParser, (req, res, next) => {
+    .post(requireAuth, jsonParser, (req, res, next) => {
         const { instructor_name, course_number, course_name, 
                 quarter, project_id, total } = req.body;
         const newCourse = { instructor_name, course_number, 
@@ -63,7 +63,7 @@ coursesRouter
 
 coursesRouter
     .route('/:course_id')
-    // .all(requireAuth)
+    .all(requireAuth)
     .all((req, res, next) => {
         CoursesService.getById(
             req.app.get('db'),

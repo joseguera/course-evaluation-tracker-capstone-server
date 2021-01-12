@@ -23,6 +23,7 @@ app.use(cors());
 
 app.use(express.json());
 
+// api routes
 app.use('/api/courses', coursesRouter);
 app.use('/api/questions', questionsRouter);
 app.use('/api/auth', authRouter);

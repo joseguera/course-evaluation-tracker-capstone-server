@@ -13,4 +13,5 @@ CREATE TABLE courses (
     notes TEXT,
     total INTEGER
         REFERENCES questions(id) ON DELETE CASCADE NOT NULL
+    UNIQUE(total)
 );

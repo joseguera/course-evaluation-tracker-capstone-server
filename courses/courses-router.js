@@ -23,6 +23,7 @@ const serializeCourse = course => ({
 coursesRouter
     .route('/')
     .get((req, res, next) => {
+        
         CoursesService.getAllCourses(
             req.app.get('db')
         )
@@ -31,39 +32,41 @@ coursesRouter
             })
             .catch(next)
     })
-    .post(requireAuth, jsonParser, (req, res, next) => {
-        const { instructor_name, course_number, course_name, 
-                quarter, project_id, total } = req.body;
-        const newCourse = { instructor_name, course_number, 
-                            course_name, quarter,
-                            project_id, total };
-        
-        for (const [key, value] of Object.entries(newCourse)) {
-            if (value == null) {
-                return res.status(400).json({
-                    error: { message: `Missing '${key}' in the request body` }
-                });
+    .post(
+        // requireAuth, 
+        jsonParser, (req, res, next) => {
+            const { instructor_name, program_area, program_rep, course_number, course_name,
+                quarter, project_id, notes, total } = req.body;
+            const newCourse = {
+                instructor_name, program_area, program_rep, course_number,
+                course_name, quarter,
+                project_id, notes, total
+            };
+            
+            for (const [key, value] of Object.entries(newCourse)) {
+                if (value == null) {
+                    return res.status(400).json({
+                        error: { message: `Missing '${key}' in the request body` }
+                    });
+                }
             }
-        }
 
-        // newCourse.program_rep = req.user.id;
-        
-        CoursesService.insertCourse(
-            req.app.get('db'),
-            newCourse
-        )
-            .then(course => {
-                res
-                    .status(201)
-                    .location(path.posix.join(req.originalUrl, `/${course.id}`))
-                    .json(course)
-            })
-            .catch(next)
-    });
+            CoursesService.insertCourse(
+                req.app.get('db'),
+                newCourse
+            )
+                .then(course => {
+                    res
+                        .status(201)
+                        .location(path.posix.join(req.originalUrl, `/${course.id}`))
+                        .json(course)
+                })
+                .catch(next)
+        });
 
 coursesRouter
     .route('/:course_id')
-    .all(requireAuth)
+    // .all(requireAuth)
     .all((req, res, next) => {
         CoursesService.getById(
             req.app.get('db'),
@@ -73,12 +76,12 @@ coursesRouter
                 if (!course) {
                     return res.status(404).json({
                         error: { message: `Course doesn't exist` }
-                })
-            }
-            res.course = course
-            next()
-        })
-        .catch(next)
+                    })
+                }
+                res.course = course
+                next()
+            })
+            .catch(next)
     })
     .get((req, res, next) => {
         res.json(serializeCourse(res.course));
@@ -93,33 +96,37 @@ coursesRouter
             })
             .catch(next)
     })
-    .patch(requireAuth, jsonParser, (req, res, next) => {
-        const { instructor_name, course_number, course_name, 
-                quarter, project_id, total } = req.body;
-        const courseToUpdate = { instructor_name, course_number, 
-                                course_name, quarter,
-                                project_id, total  };
+    .patch(
+        // requireAuth, 
+        jsonParser, (req, res, next) => {
+            const { instructor_name, program_area, course_number, course_name,
+                quarter, project_id, notes, total } = req.body;
+            const courseToUpdate = {
+                instructor_name, program_area, course_number,
+                course_name, quarter,
+                project_id, notes, total
+            };
 
-        const numberOfValues = Object.values(courseToUpdate).filter(Boolean).length
-        if (numberOfValues === 0) {
-            return res.status(400).json({
-                error: {
-                    message: `Request body must contain either 'instructor_name', 'course_number', 'course_name', 'quarter', 'project_id', 'total'`
-                }
-            })
-        }
+            const numberOfValues = Object.values(courseToUpdate).filter(Boolean).length
+            if (numberOfValues === 0) {
+                return res.status(400).json({
+                    error: {
+                        message: `Request body must contain either 'instructor_name', 'program_area', 'course_number', 'course_name', 'quarter', 'project_id', 'total'`
+                    }
+                })
+            }
 
-        courseToUpdate.program_rep = req.user.id;
+            courseToUpdate.program_rep = req.user.id;
 
-        CoursesService.updateCourse(
-            req.app.get('db'),
-            req.params.course_id,
-            courseToUpdate
-        )
-            .then(numRowsAffected => {
-                res.status(204).end()
-            })
-            .catch(next)
-    })
+            CoursesService.updateCourse(
+                req.app.get('db'),
+                req.params.course_id,
+                courseToUpdate
+            )
+                .then(numRowsAffected => {
+                    res.status(204).end()
+                })
+                .catch(next)
+        })
 
 module.exports = coursesRouter;

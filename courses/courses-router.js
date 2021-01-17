@@ -32,9 +32,7 @@ coursesRouter
             })
             .catch(next)
     })
-    .post(
-        // requireAuth, 
-        jsonParser, (req, res, next) => {
+    .post(requireAuth, jsonParser, (req, res, next) => {
             const { instructor_name, program_area, program_rep, course_number, course_name,
                 quarter, project_id, notes, total } = req.body;
             const newCourse = {
@@ -66,7 +64,7 @@ coursesRouter
 
 coursesRouter
     .route('/:course_id')
-    // .all(requireAuth)
+    .all(requireAuth)
     .all((req, res, next) => {
         CoursesService.getById(
             req.app.get('db'),
@@ -96,9 +94,7 @@ coursesRouter
             })
             .catch(next)
     })
-    .patch(
-        // requireAuth, 
-        jsonParser, (req, res, next) => {
+    .patch(requireAuth, jsonParser, (req, res, next) => {
             const { instructor_name, program_area, course_number, course_name,
                 quarter, project_id, notes, total } = req.body;
             const courseToUpdate = {

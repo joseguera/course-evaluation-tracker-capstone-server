@@ -32,9 +32,7 @@ questionsRouter
             })
             .catch(next)
     })
-    .post(
-        // requireAuth, 
-        jsonParser, (req, res, next) => {
+    .post(requireAuth, jsonParser, (req, res, next) => {
         const { q1, q2, q3, q4, q5, q6, q7, q8, q9, q10 } = req.body;
         const newQuestion = { q1, q2, q3, q4, q5, q6, q7, q8, q9, q10 };
         

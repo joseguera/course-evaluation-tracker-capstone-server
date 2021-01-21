@@ -11,12 +11,24 @@ const UsersService = {
             .then(user => !!user)
     },
 
+    getAllUsers(knex) {
+        return knex.select('*').from('users');
+    },
+
     insertUser(db, newUser) {
         return db
             .insert(newUser)
             .into('users')
             .returning('*')
             .then(([user]) => user)
+    },
+
+    getById(knex, id) {
+        return knex
+            .from('users')
+            .select('*')
+            .where('id', id)
+            .first()
     },
 
     validatePassword(password) {
@@ -42,14 +54,6 @@ const UsersService = {
         return bcrypt.hash(password, 12)
     },
 
-    serializeUser(user) {
-        return {
-            id: user.id,
-            first_name: xss(user.first_name),
-            last_name: xss(user.last_name),
-            username: xss(user.username),
-        }
-    },
 }
 
 module.exports = UsersService

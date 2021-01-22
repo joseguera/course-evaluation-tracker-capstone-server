@@ -17,7 +17,16 @@ const serializeCourse = course => ({
     quarter: xss(course.quarter),
     project_id: course.project_id,
     notes: xss(course.notes),
-    total: course.total
+    q1: course.q1,
+    q2: course.q2,
+    q3: course.q3,
+    q4: course.q4,
+    q5: course.q5,
+    q6: course.q6,
+    q7: course.q7,
+    q8: course.q8,
+    q9: course.q9,
+    q10: course.q10
 });
 
 coursesRouter
@@ -33,12 +42,13 @@ coursesRouter
             .catch(next)
     })
     .post(requireAuth, jsonParser, (req, res, next) => {
-            const { instructor_name, program_area, program_rep, course_number, course_name,
-                quarter, project_id, notes, total } = req.body;
+            const { instructor_name, program_area, course_number, course_name,
+                quarter, project_id, notes, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10 } = req.body;
+
             const newCourse = {
-                instructor_name, program_area, program_rep, course_number,
+                instructor_name, program_area, course_number,
                 course_name, quarter,
-                project_id, notes, total
+                project_id, notes, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10
             };
             
             for (const [key, value] of Object.entries(newCourse)) {
@@ -96,18 +106,18 @@ coursesRouter
     })
     .patch(requireAuth, jsonParser, (req, res, next) => {
             const { instructor_name, program_area, course_number, course_name,
-                quarter, project_id, notes, total } = req.body;
+                quarter, project_id, notes, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10 } = req.body;
             const courseToUpdate = {
                 instructor_name, program_area, course_number,
                 course_name, quarter,
-                project_id, notes, total
+                project_id, notes, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10
             };
 
             const numberOfValues = Object.values(courseToUpdate).filter(Boolean).length
             if (numberOfValues === 0) {
                 return res.status(400).json({
                     error: {
-                        message: `Request body must contain either 'instructor_name', 'program_area', 'course_number', 'course_name', 'quarter', 'project_id', 'total'`
+                        message: `Request body must contain either 'instructor_name', 'program_area', 'course_number', 'course_name', 'quarter', 'project_id', and answers to all 'q's'`
                     }
                 })
             }

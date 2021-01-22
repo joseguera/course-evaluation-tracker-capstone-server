@@ -1,7 +1,7 @@
 const CoursesService = {
     getAllCourses(knex) {
         return knex.select('*').from('courses');
-    },
+    },   
 
     insertCourse(knex, newCourse) {
         return knex

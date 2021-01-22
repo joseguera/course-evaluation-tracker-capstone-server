@@ -5,13 +5,21 @@ CREATE TABLE courses (
     instructor_name TEXT NOT NULL,
     program_area TEXT NOT NULL,
     program_rep INTEGER
-        REFERENCES users(id) ON DELETE CASCADE NOT NULL,  
+        REFERENCES users(id) ON DELETE CASCADE, 
+        -- NOT NULL,  
     course_number TEXT NOT NULL,
     course_name TEXT NOT NULL,
     quarter TEXT NOT NULL,
     project_id INTEGER NOT NULL,
     notes TEXT,
-    total INTEGER
-        REFERENCES questions(id) ON DELETE CASCADE NOT NULL
-    UNIQUE(total)
+    q1 INTEGER NOT NULL,
+    q2 INTEGER NOT NULL,
+    q3 INTEGER NOT NULL,
+    q4 INTEGER NOT NULL,
+    q5 INTEGER NOT NULL,
+    q6 INTEGER NOT NULL,
+    q7 INTEGER NOT NULL,
+    q8 INTEGER NOT NULL,
+    q9 INTEGER NOT NULL,
+    q10 INTEGER NOT NULL   
 );

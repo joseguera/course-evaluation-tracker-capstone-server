@@ -31,6 +31,7 @@ const serializeCourse = course => ({
 
 coursesRouter
     .route('/')
+    .all(requireAuth)
     .get((req, res, next) => {
         
         CoursesService.getAllCourses(

@@ -6,7 +6,7 @@ This app allows users to review courses and keep track of the instructor's sylla
 
 
 ### 1. Working Prototype
-You can access a working prototype of the React app here: https://course-evaluation-tracker-capstone.vercel.app/ and Node app here: https://secure-springs-04088.herokuapp.com/
+You can access a working prototype of the React app here: https://course-grader-capstone.vercel.app/ and Node app here: https://secure-springs-04088.herokuapp.com/
 
 
 

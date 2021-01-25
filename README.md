@@ -140,12 +140,10 @@ API Documentation details:
 * POST Grade a Course
     * `https://secure-springs-04088.herokuapp.com/api/courses/`
         * JSON body
-        *   {   
-                "instructor_name": "Carl Johnson", "program_area": "LMC", "course_number": "MGMT X 567.8",
+        *   {   "instructor_name": "Carl Johnson", "program_area": "LMC", "course_number": "MGMT X 567.8",
                 "course_name": "Mo' Money, Mo' Problems", "quarter": "Winter 2021", "project_id": "377656",
                 "notes": "missing nothing", "q1": 2, "q2": 2, "q3": 2, "q4": 2, "q5": 2, "q6": 2, "q7": 2,
-                "q8": 2, "q9": 2, "q10": 2
-            }
+                "q8": 2, "q9": 2, "q10": 2   }
 
 * POST Register User
     * `https://secure-springs-04088.herokuapp.com/api/users`
@@ -155,12 +153,10 @@ API Documentation details:
 * PATCH Edit a Course
     * `https://secure-springs-04088.herokuapp.com/api/courses/12`
         * JSON body
-        *   {   
-                "instructor_name": "Carl Johnson", "program_area": "LMC", "course_number": "MGMT X 567.8",
+        *   {   "instructor_name": "Carl Johnson", "program_area": "LMC", "course_number": "MGMT X 567.8",
                 "course_name": "Mo' Money, Mo' Problems", "quarter": "Winter 2021", "project_id": "377656",
                 "notes": "missing nothing", "q1": 2, "q2": 2, "q3": 2, "q4": 2, "q5": 2, "q6": 2, "q7": 2,
-                "q8": 2, "q9": 2, "q10": 2
-            }
+                "q8": 2, "q9": 2, "q10": 2   }
 
 * DELETE One Course
     * `https://secure-springs-04088.herokuapp.com/api/courses/12`
@@ -170,7 +166,7 @@ API Documentation details:
 ### 9. Screenshots
 Landing/Home Page
 :-------------------------:
-![Landing/Home Page](/github-images/screenshots/landing page.png)
+![Landing/Home Page](/github-images/screenshots/landing-page.png)
 Login Page
 ![Login Page](/github-images/screenshots/login-page.png)
 Dashboard Page

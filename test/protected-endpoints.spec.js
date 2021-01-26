@@ -7,14 +7,13 @@ describe('Protected endpoints', function() {
 
   const {
     testUsers,
-    testArticles,
-    testComments,
-  } = helpers.makeArticlesFixtures()
+    testCourses,
+  } = helpers.makeCoursesFixtures()
 
   before('make knex instance', () => {
     db = knex({
       client: 'pg',
-      connection: process.env.TEST_DB_URL,
+      connection: process.env.TEST_DATABASE_URL,
     })
     app.set('db', db)
   })
@@ -25,29 +24,28 @@ describe('Protected endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db))
 
-  beforeEach('insert articles', () =>
-    helpers.seedArticlesTables(
+  beforeEach('insert courses', () =>
+    helpers.seedCoursesTables(
       db,
       testUsers,
-      testArticles,
-      testComments,
+      testCourses,
     )
   )
 
   const protectedEndpoints = [
     {
-      name: 'GET /api/articles/:article_id',
-      path: '/api/articles/1',
+      name: 'GET /api/courses',
+      path: '/api/courses',
       method: supertest(app).get,
     },
     {
-      name: 'GET /api/articles/:article_id/comments',
-      path: '/api/articles/1/comments',
+      name: 'GET /api/courses/:course_id',
+      path: '/api/courses/1',
       method: supertest(app).get,
     },
     {
-      name: 'POST /api/comments',
-      path: '/api/comments',
+      name: 'POST /api/courses',
+      path: '/api/courses',
       method: supertest(app).post,
     },
   ]
@@ -68,7 +66,7 @@ describe('Protected endpoints', function() {
       })
 
       it(`responds 401 'Unauthorized request' when invalid sub in payload`, () => {
-        const invalidUser = { user_name: 'user-not-existy', id: 1 }
+        const invalidUser = { username: 'user-not-existy', id: 1 }
         return endpoint.method(endpoint.path)
           .set('Authorization', helpers.makeAuthHeader(invalidUser))
           .expect(401, { error: `Unauthorized request` })

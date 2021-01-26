@@ -2,13 +2,13 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('Articles Endpoints', function() {
+describe('Courses Endpoints', function() {
   let db
 
   const {
     testUsers,
     testCourses
-  } = helpers.makeArticlesFixtures()
+  } = helpers.makeCoursesFixtures()
 
   before('make knex instance', () => {
     db = knex({
@@ -42,7 +42,7 @@ describe('Articles Endpoints', function() {
         )
       )
 
-      it('responds with 200 and all of the articles', () => {
+      it('responds with 200 and all of the courses', () => {
         const expectedCourses = testCourses.map(course =>
           helpers.makeExpectedCourse(
             testUsers,
@@ -55,136 +55,95 @@ describe('Articles Endpoints', function() {
       })
     })
 
-    context(`Given an XSS attack article`, () => {
+    context(`Given an XSS attack course`, () => {
       const testUser = helpers.makeUsersArray()[1]
       const {
-        maliciousArticle,
-        expectedArticle,
-      } = helpers.makeMaliciousArticle(testUser)
+        maliciousCourse,
+        expectedCourse,
+      } = helpers.makeMaliciousCourse(testUser)
 
-      beforeEach('insert malicious article', () => {
-        return helpers.seedMaliciousArticle(
+      beforeEach('insert malicious course', () => {
+        return helpers.seedMaliciousCourse(
           db,
           testUser,
-          maliciousArticle,
+          maliciousCourse,
         )
       })
 
       it('removes XSS attack content', () => {
         return supertest(app)
-          .get(`/api/articles`)
+          .get(`/api/courses`)
           .expect(200)
           .expect(res => {
-            expect(res.body[0].title).to.eql(expectedArticle.title)
-            expect(res.body[0].content).to.eql(expectedArticle.content)
+            expect(res.body[0].title).to.eql(expectedCourse.title)
+            expect(res.body[0].content).to.eql(expectedCourse.content)
           })
       })
     })
   })
 
-  describe(`GET /api/articles/:article_id`, () => {
-    context(`Given no articles`, () => {
+  describe(`GET /api/courses/:course_id`, () => {
+    context(`Given no courses`, () => {
       beforeEach(() =>
         helpers.seedUsers(db, testUsers)
       )
 
       it(`responds with 404`, () => {
-        const articleId = 123456
+        const courseId = 123456
         return supertest(app)
-          .get(`/api/articles/${articleId}`)
+          .get(`/api/courses/${courseId}`)
           .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
-          .expect(404, { error: `Article doesn't exist` })
+          .expect(404, { error:  { message: "Course doesn't exist" }  })
       })
     })
 
-    context('Given there are articles in the database', () => {
-      beforeEach('insert articles', () =>
-        helpers.seedArticlesTables(
+    context('Given there are courses in the database', () => {
+      beforeEach('insert courses', () =>
+        helpers.seedCoursesTables(
           db,
           testUsers,
-          testArticles,
-          testComments,
+          testCourses,
         )
       )
 
-      it('responds with 200 and the specified article', () => {
-        const articleId = 2
-        const expectedArticle = helpers.makeExpectedArticle(
+      it('responds with 200 and the specified course', () => {
+        const courseId = 2
+        const expectedCourse = helpers.makeExpectedCourse(
           testUsers,
-          testArticles[articleId - 1],
-          testComments,
+          testCourses[courseId - 1],
         )
 
         return supertest(app)
-          .get(`/api/articles/${articleId}`)
+          .get(`/api/courses/${courseId}`)
           .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
-          .expect(200, expectedArticle)
+          .expect(200, expectedCourse)
       })
     })
 
-    context(`Given an XSS attack article`, () => {
+    context(`Given an XSS attack course`, () => {
       const testUser = helpers.makeUsersArray()[1]
       const {
-        maliciousArticle,
-        expectedArticle,
-      } = helpers.makeMaliciousArticle(testUser)
+        maliciousCourse,
+        expectedCourse,
+      } = helpers.makeMaliciousCourse(testUser)
 
-      beforeEach('insert malicious article', () => {
-        return helpers.seedMaliciousArticle(
+      beforeEach('insert malicious course', () => {
+        return helpers.seedMaliciousCourse(
           db,
           testUser,
-          maliciousArticle,
+          maliciousCourse,
         )
       })
 
       it('removes XSS attack content', () => {
         return supertest(app)
-          .get(`/api/articles/${maliciousArticle.id}`)
+          .get(`/api/courses/${maliciousCourse.id}`)
           .set('Authorization', helpers.makeAuthHeader(testUser))
           .expect(200)
           .expect(res => {
-            expect(res.body.title).to.eql(expectedArticle.title)
-            expect(res.body.content).to.eql(expectedArticle.content)
+            expect(res.body.title).to.eql(expectedCourse.title)
+            expect(res.body.content).to.eql(expectedCourse.content)
           })
-      })
-    })
-  })
-
-  describe(`GET /api/articles/:article_id/comments`, () => {
-    context(`Given no articles`, () => {
-      beforeEach(() =>
-        helpers.seedUsers(db, testUsers)
-      )
-
-      it(`responds with 404`, () => {
-        const articleId = 123456
-        return supertest(app)
-          .get(`/api/articles/${articleId}/comments`)
-          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
-          .expect(404, { error: `Article doesn't exist` })
-      })
-    })
-
-    context('Given there are comments for article in the database', () => {
-      beforeEach('insert articles', () =>
-        helpers.seedArticlesTables(
-          db,
-          testUsers,
-          testArticles,
-          testComments,
-        )
-      )
-
-      it('responds with 200 and the specified comments', () => {
-        const articleId = 1
-        const expectedComments = helpers.makeExpectedArticleComments(
-          testUsers, articleId, testComments
-        )
-
-        return supertest(app)
-          .get(`/api/articles/${articleId}/comments`)
-          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
-          .expect(200, expectedComments)
       })
     })
   })

@@ -8,14 +8,12 @@ authRouter
     .post('/login', jsonBodyParser, (req, res, next) => {
         const { username, password } = req.body
         const loginUser = { username, password }
-        // console.log(loginUser);
 
         for (const [key, value] of Object.entries(loginUser))
             if (value == null)
                 return res.status(400).json({
                     error: `Missing '${key}' in request body`
                 })
-        // console.log(loginUser.username);
         AuthService.getUserWithUserName(
             req.app.get('db'),
             loginUser.username
@@ -41,7 +39,6 @@ authRouter
                     })
             })
             .catch(next)
-            //ending
     })
 
 module.exports = authRouter

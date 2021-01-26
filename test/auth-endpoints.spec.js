@@ -6,13 +6,13 @@ const helpers = require('./test-helpers')
 describe('Auth Endpoints', function() {
   let db
 
-  const { testUsers } = helpers.makeArticlesFixtures()
+  const { testUsers } = helpers.makeCoursesFixtures()
   const testUser = testUsers[0]
 
   before('make knex instance', () => {
     db = knex({
       client: 'pg',
-      connection: process.env.TEST_DB_URL,
+      connection: process.env.TEST_DATABASE_URL,
     })
     app.set('db', db)
   })
@@ -31,11 +31,11 @@ describe('Auth Endpoints', function() {
       )
     )
 
-    const requiredFields = ['user_name', 'password']
+    const requiredFields = ['username', 'password']
 
     requiredFields.forEach(field => {
       const loginAttemptBody = {
-        user_name: testUser.user_name,
+        username: testUser.username,
         password: testUser.password,
       }
 
@@ -51,32 +51,32 @@ describe('Auth Endpoints', function() {
       })
     })
 
-    it(`responds 400 'invalid user_name or password' when bad user_name`, () => {
-      const userInvalidUser = { user_name: 'user-not', password: 'existy' }
+    it(`responds 400 'invalid username or password' when bad username`, () => {
+      const userInvalidUser = { username: 'user-not', password: 'existy' }
       return supertest(app)
         .post('/api/auth/login')
         .send(userInvalidUser)
-        .expect(400, { error: `Incorrect user_name or password` })
+        .expect(400, { error: `Incorrect username or password` })
     })
 
-    it(`responds 400 'invalid user_name or password' when bad password`, () => {
-      const userInvalidPass = { user_name: testUser.user_name, password: 'incorrect' }
+    it(`responds 400 'invalid username or password' when bad password`, () => {
+      const userInvalidPass = { username: testUser.username, password: 'incorrect' }
       return supertest(app)
         .post('/api/auth/login')
         .send(userInvalidPass)
-        .expect(400, { error: `Incorrect user_name or password` })
+        .expect(400, { error: `Incorrect username or password` })
     })
 
     it(`responds 200 and JWT auth token using secret when valid credentials`, () => {
       const userValidCreds = {
-        user_name: testUser.user_name,
+        username: testUser.username,
         password: testUser.password,
       }
       const expectedToken = jwt.sign(
         { user_id: testUser.id },
         process.env.JWT_SECRET,
         {
-          subject: testUser.user_name,
+          subject: testUser.username,
           algorithm: 'HS256',
         }
       )

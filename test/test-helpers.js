@@ -58,7 +58,7 @@ function makeCoursesArray(users) {
     },
     {
         id: 2,
-        instructor_name: "Test 1",
+        instructor_name: "Test 2",
         program_area: "LMC",
         course_number: "MGMT X 567.8",
         course_name: "Mo' Money, Mo' Problems",
@@ -78,7 +78,7 @@ function makeCoursesArray(users) {
     },
     {
         id: 3,
-        instructor_name: "Test 1",
+        instructor_name: "Test 3",
         program_area: "LMC",
         course_number: "MGMT X 567.8",
         course_name: "Mo' Money, Mo' Problems",
@@ -98,7 +98,7 @@ function makeCoursesArray(users) {
     },
     {
         id: 4,
-        instructor_name: "Test 1",
+        instructor_name: "Test 4",
         program_area: "LMC",
         course_number: "MGMT X 567.8",
         course_name: "Mo' Money, Mo' Problems",
@@ -144,27 +144,39 @@ function makeExpectedCourse(course) {
   }
 }
 
-function makeMaliciousArticle(user) {
-  const maliciousArticle = {
+function makeMaliciousCourse() {
+  const maliciousCourse = {
     id: 911,
-    style: 'How-to',
-    date_created: new Date(),
-    title: 'Naughty naughty very naughty <script>alert("xss");</script>',
-    author_id: user.id,
-    content: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+    instructor_name: "Test 4",
+    program_area: "LMC",
+    course_number: "MGMT X 567.8",
+    course_name: 'Naughty naughty very naughty <script>alert("xss");</script>',
+    quarter: "Winter 2021",
+    project_id: "377656",
+    notes: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+    q1: 2,
+    q2: 2,
+    q3: 2,
+    q4: 2,
+    q5: 2,
+    q6: 2,
+    q7: 2,
+    q8: 2,
+    q9: 2,
+    q10: 2
   }
-  const expectedArticle = {
-    ...makeExpectedCourse([user], maliciousArticle),
-    title: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
-    content: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
+  const expectedCourse = {
+    ...makeExpectedCourse(maliciousCourse),
+    course_name: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
+    notes: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
   }
   return {
-    maliciousArticle,
-    expectedArticle,
+    maliciousCourse,
+    expectedCourse,
   }
 }
 
-function makeArticlesFixtures() {
+function makeCoursesFixtures() {
   const testUsers = makeUsersArray()
   const testCourses = makeCoursesArray(testUsers)
   return { testUsers, testCourses }
@@ -175,7 +187,7 @@ function cleanTables(db) {
     trx.raw(
       `TRUNCATE
         courses,
-        users,
+        users
       `
     )
     .then(() =>
@@ -194,35 +206,35 @@ function seedUsers(db, users) {
     ...user,
     password: bcrypt.hashSync(user.password, 1)
   }))
-  return db.into('blogful_users').insert(preppedUsers)
+  return db.into('users').insert(preppedUsers)
     .then(() =>
       // update the auto sequence to stay in sync
       db.raw(
-        `SELECT setval('blogful_users_id_seq', ?)`,
+        `SELECT setval('users_id_seq', ?)`,
         [users[users.length - 1].id],
       )
     )
 }
 
-function seedArticlesTables(db, users, articles) {
+function seedCoursesTables(db, users, courses) {
   // use a transaction to group the queries and auto rollback on any failure
   return db.transaction(async trx => {
     await seedUsers(trx, users)
-    await trx.into('blogful_articles').insert(articles)
+    await trx.into('courses').insert(courses)
     // update the auto sequence to match the forced id values
     await trx.raw(
-      `SELECT setval('blogful_articles_id_seq', ?)`,
-      [articles[articles.length - 1].id],
+      `SELECT setval('courses_id_seq', ?)`,
+      [courses[courses.length - 1].id],
     )
   })
 }
 
-function seedMaliciousArticle(db, user, article) {
+function seedMaliciousCourse(db, user, course) {
   return seedUsers(db, [user])
     .then(() =>
       db
-        .into('blogful_articles')
-        .insert([article])
+        .into('courses')
+        .insert([course])
     )
 }
 
@@ -238,12 +250,12 @@ module.exports = {
   makeUsersArray,
   makeCoursesArray,
   makeExpectedCourse,
-  makeMaliciousArticle,
+  makeMaliciousCourse,
 
-  makeArticlesFixtures,
+  makeCoursesFixtures,
   cleanTables,
-  seedArticlesTables,
-  seedMaliciousArticle,
+  seedCoursesTables,
+  seedMaliciousCourse,
   makeAuthHeader,
   seedUsers,
 }

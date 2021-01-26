@@ -95,7 +95,7 @@ coursesRouter
     .get((req, res, next) => {
         res.json(serializeCourse(res.course));
     })
-    .delete((req, res, next) => {
+    .delete(requireAuth, (req, res, next) => {
         CoursesService.deleteCourse(
             req.app.get('db'),
             req.params.course_id

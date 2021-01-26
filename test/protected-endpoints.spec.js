@@ -20,7 +20,7 @@ describe('Protected endpoints', function() {
 
   after('disconnect from db', () => db.destroy())
 
-  before('cleanup', () => helpers.cleanTables(db))
+  beforeEach('cleanup', () => helpers.cleanTables(db))
 
   afterEach('cleanup', () => helpers.cleanTables(db))
 
@@ -49,6 +49,13 @@ describe('Protected endpoints', function() {
       method: supertest(app).post,
     },
   ]
+
+  describe('endpoint test', () => {
+    it(`responds 401 'Missing bearer token' when no bearer token`, () => {
+      return supertest(app).get('/api/courses')
+        .expect(401, { error: `Missing bearer token` })
+    })
+  })
 
   protectedEndpoints.forEach(endpoint => {
     describe(endpoint.name, () => {

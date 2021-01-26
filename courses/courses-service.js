@@ -17,7 +17,7 @@ const CoursesService = {
         return knex
             .from('courses')
             .select('*')
-            .where('id', id)
+            .where('id', parseInt(id))
             .first()
     },
 

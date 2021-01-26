@@ -146,12 +146,14 @@ describe('Users Endpoints', function() {
           .send(newUser)
           .expect(201)
           .expect(res => {
-            expect(res.body).to.have.property('id')
-            expect(res.body.first_name).to.eql(newUser.first_name)
-            expect(res.body.last_name).to.eql(newUser.last_name)
-            expect(res.body.username).to.eql(newUser.username)
-            expect(res.body).to.not.have.property('password')
-            expect(res.headers.location).to.eql(`/api/users/${res.body.id}`)
+            const user = res.body;
+            // console.log(user);
+              expect(user).to.have.property('id')
+              expect(user.first_name).to.eql(newUser.first_name)
+              expect(user.last_name).to.eql(newUser.last_name)
+              expect(user.username).to.eql(newUser.username)
+              expect(user).to.not.have.property('password')
+              expect(res.headers.location).to.eql(`/api/users/${user.id}`)
           })
           .expect(res =>
             db

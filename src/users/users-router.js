@@ -67,7 +67,7 @@ usersRouter
                                 res
                                     .status(201)
                                     .location(path.posix.join(req.originalUrl, `/${user.id}`))
-                                    .json(serializeUser)
+                                    .json(serializeUser(user))
                             })
                     })
             })

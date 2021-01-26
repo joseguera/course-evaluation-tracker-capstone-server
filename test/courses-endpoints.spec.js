@@ -20,15 +20,19 @@ describe('Courses Endpoints', function() {
 
   after('disconnect from db', () => db.destroy())
 
-  before('cleanup', () => helpers.cleanTables(db))
+  beforeEach('cleanup', () => helpers.cleanTables(db))
 
   afterEach('cleanup', () => helpers.cleanTables(db))
 
   describe(`GET /api/courses`, () => {
     context(`Given no courses`, () => {
+      beforeEach(() =>
+      helpers.seedUsers(db, testUsers)
+      )
       it(`responds with 200 and an empty list`, () => {
         return supertest(app)
           .get('/api/courses')
+          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
           .expect(200, [])
       })
     })
@@ -45,18 +49,18 @@ describe('Courses Endpoints', function() {
       it('responds with 200 and all of the courses', () => {
         const expectedCourses = testCourses.map(course =>
           helpers.makeExpectedCourse(
-            testUsers,
             course
           )
         )
         return supertest(app)
           .get('/api/courses')
+          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
           .expect(200, expectedCourses)
       })
     })
 
     context(`Given an XSS attack course`, () => {
-      const testUser = helpers.makeUsersArray()[1]
+      const testUser = helpers.makeUsersArray()[0]
       const {
         maliciousCourse,
         expectedCourse,
@@ -69,10 +73,13 @@ describe('Courses Endpoints', function() {
           maliciousCourse,
         )
       })
-
+      // beforeEach('seeding users', () =>
+      //   helpers.seedUsers(db, testUsers)
+      // )
       it('removes XSS attack content', () => {
         return supertest(app)
           .get(`/api/courses`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
           .expect(200)
           .expect(res => {
             expect(res.body[0].title).to.eql(expectedCourse.title)
@@ -109,9 +116,9 @@ describe('Courses Endpoints', function() {
       it('responds with 200 and the specified course', () => {
         const courseId = 2
         const expectedCourse = helpers.makeExpectedCourse(
-          testUsers,
           testCourses[courseId - 1],
         )
+        db.select('*').from('courses').then(console.log)
 
         return supertest(app)
           .get(`/api/courses/${courseId}`)

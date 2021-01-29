@@ -14,6 +14,7 @@ const serializeCourse = course => ({
     program_rep: course.program_rep,
     course_number: xss(course.course_number),
     course_name: xss(course.course_name),
+    program_rep: course.rep_name,
     quarter: xss(course.quarter),
     project_id: course.project_id,
     notes: xss(course.notes),
@@ -48,9 +49,10 @@ coursesRouter
 
             const newCourse = {
                 instructor_name, program_area, course_number,
-                course_name, quarter,
+                course_name, program_rep: req.user.id, quarter,
                 project_id, notes, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10
             };
+            console.log(newCourse)
             
             for (const [key, value] of Object.entries(newCourse)) {
                 if (value == null) {

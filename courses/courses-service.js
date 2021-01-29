@@ -1,7 +1,10 @@
 const CoursesService = {
     getAllCourses(knex) {
-        return knex.select('*').from('courses');
-    },   
+        return knex.select('courses.*',
+            knex.raw("CONCAT(users.first_name, ' ', users.last_name) as rep_name"))
+            .from('courses')
+            .join('users', 'courses.program_rep', '=', 'users.id');
+    },
 
     insertCourse(knex, newCourse) {
         return knex
@@ -14,10 +17,11 @@ const CoursesService = {
     },
 
     getById(knex, id) {
-        return knex
+        return knex.select('courses.*',
+            knex.raw("CONCAT(users.first_name, ' ', users.last_name) as rep_name"))
             .from('courses')
-            .select('*')
-            .where('id', parseInt(id))
+            .join('users', 'courses.program_rep', '=', 'users.id')
+            .where('courses.id', parseInt(id))
             .first()
     },
 

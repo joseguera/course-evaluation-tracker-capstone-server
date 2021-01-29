@@ -6,10 +6,10 @@ function errorHandler(error, req, res, next) {
    if ((process.env.NODE_ENV || '').trim() !== 'production') {
         response = { error: { message: 'server error' } }
     } else {
-        console.error(error)
         logger.error(error.message)
         response = { message: error.message, error }
     }
+    console.error(error)
     res.status(500).json(response)
 }
 
